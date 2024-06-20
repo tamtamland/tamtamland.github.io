@@ -1,0 +1,104 @@
+
+/****************************
+PHPに記述 --> 基本設定
+*****************************/
+
+<?php wp_head(); ?>    
+//htmlの、</head>の前に
+
+<?php wp_footer(); ?>
+//htmlの、</body>の前に
+
+
+<?php bloginfo( 'description' ); ?>
+//ダッシュボード -> 設定 -> 一般 -> サイトのキャッチフレーズに表記されているものを出力
+
+<?php bloginfo( 'name' ); ?>
+//ダッシュボード -> 設定 -> 一般 -> サイトのタイトルに表記されているものを出力
+
+<?php body_class(); ?> --> <body <?php body_class(); ?>> 
+//各設定(テンプレート階層)ページにあわせて、自動的にクラスを付ける
+//(例)　トップページの場合、<body class="home"> --> homeは、wordpressの場合トップページに該当
+
+
+<?php echo get_template_directory_uri(); ?>/css/***.css
+<?php echo get_template_directory_uri(); ?>/img/***.jpg
+この関数でもパスを取得することができる
+
+<?php echo esc_url( home_url( '/' )); ?> 
+//トップページに戻るリンクを取得することができる
+
+
+
+
+/****************************
+funcitons.phpに記述 
+after_setup_theme --> wordpressのサイトが表示がされる時に呼び出され処理される内容の記述
+*****************************/
+
+function ???_setup() {
+
+	//呼び出され処理される内容の記述
+
+}
+add_action( 'after_setup_theme', '???_setup' );
+//基本形 --> ???の任意の名前を付ける
+
+
+function custom_theme_setup() {
+
+	//タイトルタグを動的に出力
+	add_theme_support( 'title-tag' );
+
+	/****************************
+	functions.phpに記述　=== アイキャッチ画像を有効化
+	*****************************/
+	//アイキャッチ画像を有効化
+	add_theme_support( 'post-thumbnails' );
+	set_post_thumbnail_size( 600, 400, false );
+
+	//PHPへの記述例の詳細は、template-tag4のアイキャッチ画像を有効化のを参考に
+
+
+	/****************************
+	funcitons.phpに記述　=== カスタムメニュー
+	*****************************/
+	register_nav_menus(
+		array(
+			'globalnav' => 'グローバルナビゲーション',
+			//phpに記述する、'theme_location'  => 'globalnav' と一致させる
+			//他にもナビゲーションを作る場合
+			'footernav' => 'フッターナビゲーション',
+			//など、いくつでも追加できる --> PHPへの記述例は、template-tag4のカスタムメニュー参考に
+		)
+	);
+}
+
+add_action( 'after_setup_theme', 'custom_theme_setup' );
+
+//custom_theme_setup の名称は自分で好きなファイル名でOK
+
+
+
+/****************************
+functions.phpに記述 
+// ウィジェットエリアの登録
+*****************************/
+
+function custom_widget_register() {
+	register_sidebar( array(
+		'name'          => 'サイドバーウィジェットエリア',
+		'id'            => 'sidebar-widget',
+		'description'   => 'ブログページのサイドバーに表示されます。',
+		'before_widget' => '<div id="%1$s" class="c-widget %2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '<h2 class="c-widget__title">',
+		'after_title'   => '</h2>',
+	) );
+}
+add_action( 'widgets_init', 'custom_widget_register' );
+
+
+
+
+
